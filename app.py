@@ -119,7 +119,7 @@ def predict_image(image):
     # Load the model
     model_path = "./model/rice_leaf_diseases.h5"
     if not os.path.exists(model_path):
-    raise FileNotFoundError(f"Model file not found at {model_path}")
+        raise FileNotFoundError(f"Model file not found at {model_path}")
     print("Loading model...")
     model = load_model(model_path, compile=False)
     print("Model loaded successfully")
