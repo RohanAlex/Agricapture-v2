@@ -37,7 +37,7 @@ st.sidebar.image("agricaptureLogo.png",use_column_width=True)
 
 
 # Load the model and labels once during app startup
-model = load_model("./model/rice_leaf_diseases.h5", compile=False)
+model = load_model("./rice_leaf_diseases.h5", compile=False)
 class_names = [line.strip() for line in open("./model/diseases_labels.txt", "r")]
 
 # Disable scientific notation for clarity
