@@ -10,10 +10,17 @@ import validators
 from dotenv import load_dotenv
 import altair as alt
 import pandas as pd
+import smtplib
+from email.mime.text import MIMEText
 
 load_dotenv()
 
 FIREBASE_DB_URL = os.getenv('FIREBASE_DB_URL')
+GMAIL_PASSWORD = os.getenv('GMAIL_PASSWORD')
+RECEIVER = ["rohan.csb2024@saintgits.org" , "johanjp.csb2024@saintgits.org" , "ns.csb2024@saintgits.org" , "sneha.csb2024@saintgits.org"]
+GMAIL_USERNAME = os.getenv('GMAIL_USERNAME')
+body_flood = "Flood detected"
+body_water = "Soil is dry!! Please Irrigate"
 
 if not FIREBASE_DB_URL or not validators.url(FIREBASE_DB_URL):
     st.error("FIREBASE_DB_URL is missing or invalid. Please make sure to set a valid URL in your environment variables.")
@@ -116,14 +123,6 @@ def predict_image(image):
     data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
     data[0] = normalized_image_array
 
-    # Load the model
-    model_path = "./model/rice_leaf_diseases.h5"
-    if not os.path.exists(model_path):
-        raise FileNotFoundError(f"Model file not found at {model_path}")
-    print("Loading model...")
-    model = load_model(model_path, compile=False)
-    print("Model loaded successfully")
-
     # Predict the model
     prediction = model.predict(data)
     index = np.argmax(prediction)
@@ -171,6 +170,23 @@ def make_donut(input_response, input_text, input_color):
     ).properties(width=160, height=160)
     return plot_bg + plot + text
 
+def send_email(body):
+    try:
+        msg = MIMEText(body)
+        msg['From'] = GMAIL_USERNAME
+        msg['To'] = ', '.join(RECEIVER)
+        msg['Subject'] = "Moisture Alert"
+
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(GMAIL_USERNAME,GMAIL_PASSWORD)
+        server.sendmail(GMAIL_USERNAME,RECEIVER , msg.as_string())
+        server.quit()
+
+        print('Email sent successfully! 🚀')
+    except Exception as e:
+        print(f"Error in email : {e}")
+
 def display_realtime_data():
     # Read the data from the Realtime Database
     data = db_ref.get()
@@ -180,6 +196,14 @@ def display_realtime_data():
         keys = list(data.keys())
         cols = st.columns(3)
         for i, key in enumerate(keys):
+            if key=='SoilMoisture':
+                if data[key]==100:
+                    send_email(body_flood)
+                elif data[key]<=3:
+                    send_email(body_water)
+                else:
+                
+                    pass
             with cols[i % 3]:
                 st.text(key)
                 st.altair_chart(make_donut(data[key], key, 'blue'), use_container_width=True)
