@@ -116,6 +116,14 @@ def predict_image(image):
     data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
     data[0] = normalized_image_array
 
+    # Load the model
+model_path = "./model/rice_leaf_diseases.h5"
+if not os.path.exists(model_path):
+    raise FileNotFoundError(f"Model file not found at {model_path}")
+print("Loading model...")
+model = load_model(model_path, compile=False)
+print("Model loaded successfully")
+
     # Predict the model
     prediction = model.predict(data)
     index = np.argmax(prediction)
