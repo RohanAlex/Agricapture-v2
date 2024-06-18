@@ -1,0 +1,4 @@
+0 Bacterial Leaf Blight
+1 Brown Spot
+2 Healthy Rice Leaf
+3 Leaf Blast
