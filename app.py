@@ -199,7 +199,7 @@ def display_realtime_data():
             if key=='SoilMoisture':
                 if data[key]==100:
                     send_email(body_flood)
-                elif data[key]<=20:
+                elif data[key]<=3:
                     send_email(body_water)
                 else:
                 
