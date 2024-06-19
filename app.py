@@ -222,7 +222,7 @@ def home():
         This app helps in predicting diseases in rice leaves based on uploaded images or live camera capture.
         """)
     display_realtime_data()
-    st.image('./paddy.png', caption="Paddy Field" )
+    st.image('./SensorTable.jpg', caption="Disease possibilities corresponding to IOT values" )
 
 
 def prediction():
