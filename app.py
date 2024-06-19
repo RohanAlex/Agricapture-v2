@@ -21,6 +21,7 @@ RECEIVER = ["rohan.csb2024@saintgits.org" , "johanjp.csb2024@saintgits.org" , "n
 GMAIL_USERNAME = os.getenv('GMAIL_USERNAME')
 body_flood = "Flood detected"
 body_water = "Soil is dry!! Please Irrigate"
+high_temp="Since the temperature is above 23.79°C there are high chances of diseases like Leaf Blast, Bacterial Leaf Blight and Brown Spot "
 
 if not FIREBASE_DB_URL or not validators.url(FIREBASE_DB_URL):
     st.error("FIREBASE_DB_URL is missing or invalid. Please make sure to set a valid URL in your environment variables.")
@@ -175,7 +176,7 @@ def send_email(body):
         msg = MIMEText(body)
         msg['From'] = GMAIL_USERNAME
         msg['To'] = ', '.join(RECEIVER)
-        msg['Subject'] = "Moisture Alert"
+        msg['Subject'] = "Agricapture Alert"
 
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
@@ -201,7 +202,10 @@ def display_realtime_data():
                     send_email(body_flood)
                 elif data[key]<=3:
                     send_email(body_water)
-                else:
+            if key=='Temperature':
+                if data[key]>=23 :
+                    send_email(high_temp)
+                
                 
                     pass
             with cols[i % 3]:
