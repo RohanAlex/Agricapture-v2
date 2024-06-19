@@ -21,8 +21,9 @@ RECEIVER = ["rohan.csb2024@saintgits.org" , "johanjp.csb2024@saintgits.org" , "n
 GMAIL_USERNAME = os.getenv('GMAIL_USERNAME')
 body_flood = "Flood detected"
 body_water = "Soil is dry!! Please Irrigate"
-high_temp="Since the temperature is above 23.79°C there are high chances of diseases like Leaf Blast, Bacterial Leaf Blight and Brown Spot "
-
+LeafBlast="Crop is highly vulnerable to Leaf Blast as Temperature is between 23.88°C and 25.51°C"
+LeafBlight="Crop is highly vulnerable to Leaf Blight as Temperature is between 25.21°C and 32.09°C"
+BrownSpot="Crop is highly vulnerable to Brown Spot as Temperature is between 23.79°C and 32.83°C"
 if not FIREBASE_DB_URL or not validators.url(FIREBASE_DB_URL):
     st.error("FIREBASE_DB_URL is missing or invalid. Please make sure to set a valid URL in your environment variables.")
     st.stop()
@@ -203,10 +204,12 @@ def display_realtime_data():
                 elif data[key]<=3:
                     send_email(body_water)
             if key=='Temperature':
-                if data[key]>=23 :
-                    send_email(high_temp)
-                
-                
+                if data[key]>=23.88 and data[key]<=25.51:
+                    send_email(LeafBlast)
+                elif data[key]>=25.21 and data[key]<=32.09:
+                    send_email(LeafBlight)
+                elif data[key]>=23.79 and data[key]<=32.83:
+                    send_email(BrownSpot)
                     pass
             with cols[i % 3]:
                 st.text(key)
